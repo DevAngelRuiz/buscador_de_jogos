@@ -1,6 +1,6 @@
 import { Container, ContainerItems, InputRam, Button, Label } from './styles'
 import api from './api'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -56,10 +56,14 @@ function App() {
     } = event;
     setGenreName(
       // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
+      typeof value === 'string' ? value.split(',') : value,  
+    ) 
     
-    );
-    console.log(setGenreName)
+  
+    // useEffect(() => {
+
+    // }, []);
+   
 
     //array vazio????
 
@@ -85,19 +89,31 @@ function App() {
 
   const [option, setOption] = React.useState('');
 
-  const pcOrBrowser = (event) => {
+  function changePcOrBrowser (event) {
     setOption(event.target.value);
     console.log(setOption)
   };
 
-  // pegar os dados do input e exectuar o Onclick
-  
+  // pegar os dados do input 
+
+const inputGB = useRef()
+console.log(inputGB.current.valueAsNumber)
 
 
-  return (
+//botao de busca 
 
 
-    <div>
+
+// const [search, setSearch] = useState()
+// function resultSearch(){
+//   setSearch()
+// }
+
+// regras: o sistema deve retornar apenas 1 resultado, filtrar os generos escolhidos, pc ou browser e GB > ou =
+
+
+return (
+
       <Container>
         <ContainerItems>
           <h1>Descubra seu próximo jogo</h1>
@@ -136,7 +152,7 @@ function App() {
   {/* ACEITAR APENAS NUMEROS INTEIROS */}
 
           <Label>Quantos GB de memória ram você tem?</Label>
-          <InputRam placeholder='Apenas o número. Ex: 4' type='number' ></InputRam>
+          <InputRam ref={inputGB} placeholder='Apenas o número. Ex: 4' type='number' ></InputRam>
 
           <Label>Deseja jogar no PC ou Navegador?</Label>
           <Box sx={{ minWidth: 342 }}>
@@ -147,7 +163,7 @@ function App() {
           id="demo-simple-select"
           value={option}
           label="option"
-          onChange={pcOrBrowser}
+          onChange={changePcOrBrowser}
         >
           <MenuItem value={10}>PC</MenuItem>
           <MenuItem value={20}>Browser</MenuItem>
@@ -167,12 +183,8 @@ function App() {
           <Button onClick={() => window.location.reload()}>Nova Pesquisa</Button>
         </ContainerItems>
       </Container>
+  )}
 
-
-
-    </div>
-  )
-}
 
 
 export default App
