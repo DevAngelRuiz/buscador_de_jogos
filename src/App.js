@@ -1,6 +1,5 @@
-import { Container, ContainerItems, InputRam, Button, Label } from './styles'
-import api from './api'
-import { useState, useEffect, useRef } from 'react'
+import { Container, ContainerItems, InputRam, Button, Label, Result } from './styles'
+import { useState } from 'react'
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -10,6 +9,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
+import axios from 'axios'
 
 
 
@@ -17,6 +17,10 @@ import Chip from '@mui/material/Chip';
 function App() {
 
   //Select genero
+  const [games, setGames] = useState([])
+  const [genreName, setGenreName] = React.useState([]);
+  const [option, setOption] = React.useState('');
+  const [gb, setGb] = useState()
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -40,15 +44,14 @@ function App() {
   function getStyles(name, generName, theme) {
     return {
       fontWeight:
-      generName.indexOf(name) === -1
+        generName.indexOf(name) === -1
           ? theme.typography.fontWeightRegular
           : theme.typography.fontWeightMedium,
     };
   }
 
-
   const theme = useTheme();
-  const [genreName, setGenreName] = React.useState([]);
+
 
   const handleChange = (event) => {
     const {
@@ -56,134 +59,138 @@ function App() {
     } = event;
     setGenreName(
       // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,  
-    ) 
-    
-  
-    // useEffect(() => {
 
-    // }, []);
-   
+      typeof value === 'string' ? value.split(',') : value,
 
-    //array vazio????
-
-   
-    
+    )
   }
 
 
-//teste get api 
+  //teste get api 
+  const category = genreName.join('.')
+  function selectGame() {
+    var parametros = null;
+    if (category === "") {
+      alert("😰 Algo deu errado, prencha os campos e tente novamente");
+      return;
+    }
 
-  const [games, setGames] = useState([])
+    if (option !== "") { //se tiver valor
+      parametros = { tag: category, platform: option };
+    }
+    else {
+      parametros = { tag: category };
+    }
+    const options = {
+      method: 'GET',
+      url: 'https://www.freetogame.com/api/filter',
+      params: parametros,
+    };
 
-  useEffect(() => {
-    api
-      .get('/game?id=452')
-      .then((response) => setGames(response.data))
-      .catch((err) => {
-        console.error("ops! ocorreu um erro" + err);
-      });
-  }, []);
+    axios.request(options).then(function (response) {
+
+      const jogos = Object.values(response.data)
+      const jogoRandom = jogos[Math.floor(Math.random() * jogos.length)];
+      console.log(jogoRandom);
+      setGames(jogoRandom)
+    }).catch(function (error) {
+      console.error(error);
+    });
+
+  }
 
   //select opção pc ou navegador
 
-  const [option, setOption] = React.useState('');
 
-  function changePcOrBrowser (event) {
+  function changePcOrBrowser(event) {
     setOption(event.target.value);
-    console.log(setOption)
-  };
 
+  };
   // pegar os dados do input 
 
-const inputGB = useRef()
-console.log(inputGB.current.valueAsNumber)
+
+  function onChange(ev) {
+    setGb(ev.target.value)
+  }
 
 
-//botao de busca 
+
+  return (
+
+    <Container>
+      <ContainerItems>
+        <h1>Descubra seu próximo jogo</h1>
+        <Label>Escolha quantos gêneros desejar:</Label>
+
+        <FormControl sx={{ m: 1, width: 342 }} >
+          <InputLabel id="demo-multiple-chip-label">Escolha o Gênero:</InputLabel>
+          <Select
+            labelId="demo-multiple-chip-label"
+            id="demo-multiple-chip"
+            multiple
+            value={genreName}
+            onChange={handleChange}
+            input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+            renderValue={(selected) => (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {selected.map((value) => (
+                  <Chip key={value} label={value} />
+                ))}
+              </Box>
+            )}
+            MenuProps={MenuProps}
+          >
+            {genre.map((name) => (
+              <MenuItem
+                key={name}
+                value={name}
+                style={getStyles(name, genreName, theme)}
+              >
+                {name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
 
 
-// const [search, setSearch] = useState()
-// function resultSearch(){
-//   setSearch()
-// }
-
-// regras: o sistema deve retornar apenas 1 resultado, filtrar os generos escolhidos, pc ou browser e GB > ou =
+        <Label>Quantos GB de memória ram você tem?</Label>
+        <InputRam placeholder='Apenas o número. Ex: 4' type='number' onChange={onChange}></InputRam>
 
 
-return (
 
-      <Container>
-        <ContainerItems>
-          <h1>Descubra seu próximo jogo</h1>
-          <Label>Escolha quantos gêneros desejar:</Label>
 
-          <FormControl sx={{ m: 1, width: 342 }} >
-            <InputLabel id="demo-multiple-chip-label">Escolha o Gênero:</InputLabel>
+        <Label>Deseja jogar no PC ou Navegador?</Label>
+        <Box sx={{ minWidth: 342 }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Opcional</InputLabel>
             <Select
-              labelId="demo-multiple-chip-label"
-              id="demo-multiple-chip"
-              multiple
-              value={genreName}
-              onChange={handleChange}
-              input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
-              renderValue={(selected) => (
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                  {selected.map((value) => (
-                    <Chip key={value} label={value} />
-                  ))}
-                </Box>
-              )}
-              MenuProps={MenuProps}
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={option}
+              label="option"
+              onChange={changePcOrBrowser}
             >
-              {genre.map((name) => (
-                <MenuItem
-                  key={name}
-                  value={name}
-                  style={getStyles(name, genreName, theme)}
-                >
-                  {name}
-                </MenuItem>
-              ))}
+              <MenuItem value={'pc'}>PC</MenuItem>
+              <MenuItem value={'browser'}>Browser</MenuItem>
             </Select>
           </FormControl>
-
-  {/* ACEITAR APENAS NUMEROS INTEIROS */}
-
-          <Label>Quantos GB de memória ram você tem?</Label>
-          <InputRam ref={inputGB} placeholder='Apenas o número. Ex: 4' type='number' ></InputRam>
-
-          <Label>Deseja jogar no PC ou Navegador?</Label>
-          <Box sx={{ minWidth: 342 }}>
-      <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Opcional</InputLabel>
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={option}
-          label="option"
-          onChange={changePcOrBrowser}
-        >
-          <MenuItem value={10}>PC</MenuItem>
-          <MenuItem value={20}>Browser</MenuItem>
-          <MenuItem value={30}>Tanto Faz</MenuItem>
-        </Select>
-      </FormControl>
-    </Box>
-  
-
-          
-          <Button>Buscar</Button>
+        </Box>
 
 
-          <p> Nome: {games?.title}</p>
-          <p> Link: {games?.game_url}</p>
-          <p> busca: {}</p>
-          <Button onClick={() => window.location.reload()}>Nova Pesquisa</Button>
-        </ContainerItems>
-      </Container>
-  )}
+
+        <Button onClick={selectGame} >Buscar</Button>
+
+        <Result>
+          <p>  {games?.title}</p>
+          <img alt='imagem-game' src={`https://www.freetogame.com/g/${games.id}/thumbnail.jpg`} />
+          <p>  {games?.game_url}</p>
+        </Result>
+        <Button onClick={() => window.location.reload()}>Nova Pesquisa</Button>
+      </ContainerItems>
+    </Container>
+  )
+}
 
 
 

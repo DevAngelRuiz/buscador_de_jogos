@@ -22,7 +22,7 @@ border-radius: 61px 61px 0px 0px;
 padding: 50px 36px;
 display: flex;
 flex-direction: column;
-backdrop-filter: blur(3px);
+backdrop-filter: blur(4px);
 height: 100vh;
 align-items: center;
 
@@ -125,5 +125,33 @@ justify-content: center;
 &:active{
     opacity: 0.5;
 }
+
+`
+export const Result = styled.div`
+width: 342px;
+height: 342px;
+border-radius: 20px;
+background: rgba(255, 255, 255, 0.25);
+box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+backdrop-filter: blur(4px);
+margin-top: 15px;
+display: flex;  
+flex-direction: column;
+align-items: center;
+gap: 10px;
+padding-top: 15px;
+padding-bottom: 15px;   
+font-size: 15px;
+font-weight: bold;
+
+img{
+width: 280px;
+height: 200px;
+border-radius: 20px;
+
+}
+
+
+
 
 `
