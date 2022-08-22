@@ -16,11 +16,12 @@ import axios from 'axios'
 
 function App() {
 
-  //Select genero
+  
   const [games, setGames] = useState([])
   const [genreName, setGenreName] = React.useState([]);
   const [option, setOption] = React.useState('');
   const [gb, setGb] = useState()
+  
 
   const ITEM_HEIGHT = 48;
   const ITEM_PADDING_TOP = 8;
@@ -112,7 +113,6 @@ function App() {
   function onChange(ev) {
     setGb(ev.target.value)
   }
-
 
 
   return (

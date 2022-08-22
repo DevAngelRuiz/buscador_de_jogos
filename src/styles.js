@@ -11,8 +11,6 @@ flex-direction: column;
 align-items: center;
 gap: 40px;
 padding-top: 20px;
-
-
 `
 
 
@@ -36,8 +34,6 @@ text-align: center;
 color: black;
 margin-bottom: 80px;
 }
-
-
 `
 
 
@@ -64,7 +60,6 @@ font-size: 18px;
 line-height: 22px;
 color: black;
 margin-left: 25px;
-
 `
 export const InputRam = styled.input`
 background: rgba(255, 255, 255, 0.25);
@@ -148,10 +143,5 @@ img{
 width: 280px;
 height: 200px;
 border-radius: 20px;
-
 }
-
-
-
-
 `
